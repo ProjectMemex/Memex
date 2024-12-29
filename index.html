@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memex Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100vh;
+            background-color: #f8f9fa;
+        }
+        .search-container {
+            text-align: center;
+        }
+        input[type="text"] {
+            width: 60%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+            margin-bottom: 20px;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .results {
+            margin-top: 20px;
+            width: 60%;
+        }
+        .result {
+            border-bottom: 1px solid #ddd;
+            padding: 10px 0;
+        }
+        .result a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>Memex Search</h1>
+        <input type="text" id="searchBar" placeholder="Search...">
+        <button onclick="performSearch()">Search</button>
+    </div>
+    <div class="results" id="results"></div>
+    <script>
+        // Sample "database" of websites
+        const websites = [
+            { url: "https://www.youtube.com", title: "YouTube", description: "Video sharing and streaming platform.", ranking_score: 10.0 },
+            { url: "https://www.twitch.tv", title: "Twitch", description: "Live streaming platform for gamers.", ranking_score: 9.0 },
+            { url: "https://www.messenger.com", title: "Messenger", description: "Instant messaging service by Meta.", ranking_score: 8.0 },
+            { url: "https://www.facebook.com", title: "Facebook", description: "Social media platform to connect with friends.", ranking_score: 8.5 },
+            { url: "https://www.instagram.com", title: "Instagram", description: "Photo and video sharing social network.", ranking_score: 8.7 },
+            { url: "https://www.reddit.com", title: "Reddit", description: "Discussion forum and community platform.", ranking_score: 9.2 },
+            { url: "https://www.twitter.com", title: "Twitter", description: "Microblogging and social networking service.", ranking_score: 8.8 },
+            { url: "https://chat.openai.com", title: "ChatGPT", description: "AI-powered conversational assistant.", ranking_score: 9.5 },
+            { url: "https://poe.com", title: "Poe", description: "Platform to interact with AI chatbots.", ranking_score: 8.6 },
+            { url: "https://sweet.tv/en/", title: "SweetTV", description: "Online TV broadcasting provider.", ranking_score: 7.5 }
+        ];
+
+        // Perform a search
+        function performSearch() {
+            const query = document.getElementById("searchBar").value.toLowerCase();
+            const results = websites
+                .filter(site => site.title.toLowerCase().includes(query)) // Match search query
+                .sort((a, b) => b.ranking_score - a.ranking_score); // Sort by ranking score
+
+            const resultsContainer = document.getElementById("results");
+            resultsContainer.innerHTML = results.map(result => `
+                <div class="result">
+                    <a href="${result.url}" target="_blank">${result.title}</a>
+                    <p>${result.description}</p>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
