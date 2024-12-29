@@ -1,0 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memex Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background-color: #f8f9fa;
+        }
+        .search-container {
+            text-align: center;
+            margin-top: 50px;
+        }
+        input[type="text"] {
+            width: 50%;
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 25px;
+            border: 1px solid #ccc;
+        }
+        button {
+            padding: 10px 20px;
+            font-size: 16px;
+            border: none;
+            background-color: #007bff;
+            color: white;
+            border-radius: 25px;
+            cursor: pointer;
+        }
+        .results {
+            margin-top: 20px;
+            width: 80%;
+        }
+        .result {
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            margin-bottom: 10px;
+            padding: 15px;
+            cursor: pointer;
+            transition: background-color 0.2s ease;
+        }
+        .result:hover {
+            background-color: #f1f1f1;
+        }
+        .result a {
+            text-decoration: none;
+            color: #007bff;
+            font-weight: bold;
+        }
+    </style>
+</head>
+<body>
+    <div class="search-container">
+        <h1>Memex Search</h1>
+        <input type="text" id="searchBar" placeholder="Search...">
+        <button onclick="performSearch()">Search</button>
+    </div>
+    <div id="specialized" style="margin-top: 20px; display: none;"></div>
+    <div class="results" id="results"></div>
+    <script>
+        async function performSearch() {
+            const query = document.getElementById("searchBar").value;
+            const response = await fetch(`http://localhost:3000/search?query=${query}`);
+            const results = await response.json();
+
+            const specializedDiv = document.getElementById("specialized");
+            const resultsDiv = document.getElementById("results");
+
+            specializedDiv.style.display = "none";
+            resultsDiv.innerHTML = "";
+
+            if (results.length > 0 && results[0].specialized) {
+                specializedDiv.style.display = "block";
+                specializedDiv.innerHTML = `<h2>Specialized Result</h2>
+                <p>Specialized content for ${results[0].site.title}:
+                ${results[0].site.content}</p>`;
+                return;
+            }
+
+            resultsDiv.innerHTML = results.map(result => `
+                <div class="result" onclick="window.location='${result.url}'">
+                    <h3>${result.title}</h3>
+                    <p>${result.content}</p>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
