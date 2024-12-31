@@ -1,0 +1,51 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Memex Search</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+        input {
+            width: 60%;
+            padding: 10px;
+        }
+        .results {
+            margin-top: 20px;
+        }
+        .result {
+            border: 1px solid #ddd;
+            padding: 10px;
+            margin-bottom: 10px;
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <h1>Memex Search</h1>
+    <input type="text" id="searchInput" placeholder="Search...">
+    <button onclick="search()">Search</button>
+    <div class="results" id="results"></div>
+    <script>
+        async function search() {
+            const query = document.getElementById("searchInput").value;
+            const response = await fetch(`http://localhost:3000/search?query=${query}`);
+            const results = await response.json();
+            const resultsDiv = document.getElementById("results");
+            resultsDiv.innerHTML = results.map(result => `
+                <div class="result" onclick="window.location.href='${result.url}'">
+                    <h3>${result.title}</h3>
+                    <p>${result.description}</p>
+                    <p>Score: ${result.dynamicScore}</p>
+                </div>
+            `).join('');
+        }
+    </script>
+</body>
+</html>
